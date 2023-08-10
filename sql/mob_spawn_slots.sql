@@ -14,6 +14,7 @@ CREATE TABLE `mob_spawn_slots` (
 
 LOCK TABLES `mob_spawn_slots` WRITE;
 
--- TODO: Replace me with data
+-- Carpenter's Landing (Zone 2)
+INSERT INTO `mob_spawn_slots` VALUES (1,2,100,1);
 
 UNLOCK TABLES;

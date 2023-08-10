@@ -23,6 +23,11 @@
 
 #include "entities/mobentity.h"
 
+SpawnSlot::SpawnSlot(uint8 maxSpawns)
+: m_maxSpawns(maxSpawns)
+{
+}
+
 void SpawnSlot::AddMob(CMobEntity* mob, uint8 spawnChance)
 {
     entries.push_back({ mob, spawnChance });
@@ -86,6 +91,12 @@ bool SpawnSlot::TrySpawn()
 
     // Don't spawn if there's another mob in this slot already spawned.
     if (allowedSpawn)
+    {
+        return false;
+    }
+
+    // If there are no remaining spawns available, bail out
+    if (remainingSpawns.empty())
     {
         return false;
     }
