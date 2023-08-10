@@ -643,9 +643,9 @@ namespace zoneutils
         // Note any shared spawns
         std::unordered_map<uint32, SpawnSlot*> spawnSlots;
 
-        const char* spawnSlotQuery = "SELECT mob_spawn_slots.id, mob_spawn_slots.chance, mob_spawn_slots.maxspawns, mob_spawn_points.mobid \
+        const char* spawnSlotQuery = "SELECT mob_spawn_slots.spawnslotid, mob_spawn_slots.chance, mob_spawn_slots.maxspawns, mob_spawn_points.mobid \
                                       FROM mob_spawn_slots \
-                                      LEFT JOIN mob_spawn_points ON mob_spawn_slots.id = mob_spawn_points.spawnslotid \
+                                      LEFT JOIN mob_spawn_points ON mob_spawn_slots.spawnslotid = mob_spawn_points.spawnslotid \
                                       WHERE mob_spawn_slots.zoneid IN (%s);";
 
         auto ret = sql->Query(spawnSlotQuery, zoneIdString.c_str());
