@@ -2310,16 +2310,14 @@ void CLuaBaseEntity::openSendBox()
 
 void CLuaBaseEntity::leaveGame()
 {
-    if (m_PBaseEntity->objtype != TYPE_PC)
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        charutils::ForceLogout(PChar);
+    }
+    else
     {
         ShowWarning("Invalid entity type calling function (%s).", m_PBaseEntity->GetName());
-        return;
     }
-
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
-
-    PChar->status = STATUS_TYPE::SHUTDOWN;
-    charutils::SendToZone(PChar, 1, 0);
 }
 
 /************************************************************************

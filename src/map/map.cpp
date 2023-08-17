@@ -760,7 +760,11 @@ int32 parse(int8* buff, size_t* buffsize, sockaddr_in* from, map_session_data_t*
 
             if (settings::get<bool>("map.PACKETGUARD_ENABLED") && PacketGuard::IsRateLimitedPacket(PChar, SmallPD_Type))
             {
-                ShowWarning("[PacketGuard] Rate-limiting packet: Player: %s - Packet: %03hX", PChar->GetName(), SmallPD_Type);
+                ShowDebug("[PacketGuard] Rate-limiting packet: Player: %s - Packet: %03hX - Logging them out", PChar->GetName(), SmallPD_Type);
+                if (settings::get<bool>("map.PACKETGUARD_LOGOUT"))
+                {
+                    charutils::ForceLogout(PChar);
+                }
                 continue; // skip this packet
             }
 
@@ -768,22 +772,24 @@ int32 parse(int8* buff, size_t* buffsize, sockaddr_in* from, map_session_data_t*
             {
                 ShowWarning("[PacketGuard] Caught mismatch between player substate and recieved packet: Player: %s - Packet: %03hX",
                             PChar->GetName(), SmallPD_Type);
-                // TODO: Plug in optional jailutils usage
+                if (settings::get<bool>("map.PACKETGUARD_LOGOUT"))
+                {
+                    charutils::ForceLogout(PChar);
+                }
                 continue; // skip this packet
             }
 
             if (PChar->loc.zone == nullptr && SmallPD_Type != 0x0A)
             {
                 ShowWarning("This packet is unexpected from %s - Received %03hX earlier without matching 0x0A", PChar->GetName(), SmallPD_Type);
+                continue; // skip this packet
             }
-            else
-            {
-                // NOTE:
-                // CBasicPacket is incredibly light when constructed from a pointer like we're doing here.
-                // It is just a bag of offsets to the data in SmallPD_ptr so its safe to construct.
-                auto basicPacket = CBasicPacket(reinterpret_cast<uint8*>(SmallPD_ptr));
-                PacketParser[SmallPD_Type](map_session_data, PChar, basicPacket);
-            }
+
+            // NOTE:
+            // CBasicPacket is incredibly light when constructed from a pointer like we're doing here.
+            // It is just a bag of offsets to the data in SmallPD_ptr so its safe to construct.
+            auto basicPacket = CBasicPacket(reinterpret_cast<uint8*>(SmallPD_ptr));
+            PacketParser[SmallPD_Type](map_session_data, PChar, basicPacket);
         }
         else
         {

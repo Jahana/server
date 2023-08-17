@@ -78,6 +78,8 @@ namespace charutils
     void CalculateStats(CCharEntity* PChar);
     void UpdateSubJob(CCharEntity* PChar);
 
+    void ForceLogout(CCharEntity* PChar);
+
     void SetLevelRestriction(CCharEntity* PChar, uint8 lvl);
 
     EMobDifficulty CheckMob(uint8 charlvl, uint8 moblvl);

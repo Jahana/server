@@ -1902,9 +1902,7 @@ void SmallPacket0x03A(map_session_data_t* const PSession, CCharEntity* const PCh
         if (settings::get<uint8>("map.LIGHTLUGGAGE_BLOCK") == (int32)(++PItemContainer->SortingPacket))
         {
             ShowWarning("lightluggage detected: <%s> will be removed from server", PChar->GetName());
-
-            PChar->status = STATUS_TYPE::SHUTDOWN;
-            charutils::SendToZone(PChar, 1, 0);
+            charutils::ForceLogout(PChar);
         }
         return;
     }
@@ -6364,8 +6362,7 @@ void SmallPacket0x0E7(map_session_data_t* const PSession, CCharEntity* const PCh
 
     if (PChar->m_moghouseID || PChar->nameflags.flags & FLAG_GM || PChar->m_GMlevel > 0)
     {
-        PChar->status = STATUS_TYPE::SHUTDOWN;
-        charutils::SendToZone(PChar, 1, 0);
+        charutils::ForceLogout(PChar);
     }
     else if (PChar->animation == ANIMATION_NONE)
     {

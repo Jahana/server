@@ -1414,6 +1414,12 @@ namespace charutils
         return itemCount;
     }
 
+    void ForceLogout(CCharEntity* PChar)
+    {
+        PChar->status = STATUS_TYPE::SHUTDOWN;
+        charutils::SendToZone(PChar, 1, 0);
+    }
+
     void UpdateSubJob(CCharEntity* PChar)
     {
         jobpointutils::RefreshGiftMods(PChar);
