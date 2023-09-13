@@ -647,6 +647,10 @@ namespace zoneutils
             {
                 // Cache Mob Lua
                 luautils::OnEntityLoad(PMob);
+
+                // NOTE: These rely on the file read that just happened
+                luautils::ApplyMixins(PMob);
+                luautils::ApplyZoneMixins(PMob);
             });
 
             PZone->ForEachMob([](CMobEntity* PMob)
@@ -654,8 +658,6 @@ namespace zoneutils
                 mobutils::AddSqlModifiers(PMob);
 
                 luautils::OnMobInitialize(PMob);
-                luautils::ApplyMixins(PMob);
-                luautils::ApplyZoneMixins(PMob);
 
                 PMob->saveModifiers();
                 PMob->saveMobModifiers();

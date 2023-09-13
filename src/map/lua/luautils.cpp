@@ -3016,27 +3016,23 @@ namespace luautils
         return 0;
     }
 
-    // Called during server startup, file reads are OK!
     int32 ApplyMixins(CBaseEntity* PMob)
     {
         TracyZoneScoped;
 
-        if (PMob == nullptr || PMob->objtype != TYPE_MOB)
+        // clang-format off
+        ScopeGuard sg([&]()
         {
-            return -1;
-        }
+            // Clear out globals
+            lua.set("mixins", sol::lua_nil);
+            lua.set("mixinOptions", sol::lua_nil);
+        });
+        // clang-format on
 
-        // Clear out globals
-        lua.set("mixins", sol::lua_nil);
-        lua.set("mixinOptions", sol::lua_nil);
+        // We are assuming that mixin and optionally mixinOptions have been populated by a file-read
+        // before this function is called!
 
-        auto zone_name = PMob->loc.zone->GetName();
-        auto name      = PMob->GetName();
-
-        auto filename = fmt::format("./scripts/zones/{}/mobs/{}.lua", zone_name, name);
-
-        auto script_result = lua.safe_script_file(filename);
-        if (!script_result.valid())
+        if (PMob == nullptr || PMob->objtype != TYPE_MOB)
         {
             return -1;
         }
@@ -3063,29 +3059,29 @@ namespace luautils
         {
             sol::error err = result;
             ShowError("luautils::applyMixins: %s", err.what());
+            return -1;
         }
 
         return 0;
     }
 
-    // Called during server startup, file reads are OK!
     int32 ApplyZoneMixins(CBaseEntity* PMob)
     {
         TracyZoneScoped;
 
-        if (PMob == nullptr || PMob->objtype != TYPE_MOB)
+        // clang-format off
+        ScopeGuard sg([&]()
         {
-            return -1;
-        }
+            // Clear out globals
+            lua.set("mixins", sol::lua_nil);
+            lua.set("mixinOptions", sol::lua_nil);
+        });
+        // clang-format on
 
-        // Clear out any previous global definitions
-        lua.set("mixins", sol::lua_nil);
-        lua.set("mixinOptions", sol::lua_nil);
+        // We are assuming that mixin and optionally mixinOptions have been populated by a file-read
+        // before this function is called!
 
-        auto filename = fmt::format("./scripts/mixins/zones/{}.lua", PMob->loc.zone->GetName());
-
-        auto script_result = lua.safe_script_file(filename);
-        if (!script_result.valid())
+        if (PMob == nullptr || PMob->objtype != TYPE_MOB)
         {
             return -1;
         }
